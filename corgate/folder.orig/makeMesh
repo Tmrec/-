@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# This tool is developed by Sebastiano Stipa, Politecnico di Milano, 2020 
+
+# USER INPUTS -----------------------------------------------------------
+processors=2   # number of PC processors for parallel computation
+#------------------------------------------------------------------------
+
+echo "Starting OpenFOAM job at: " $(date)
+
+blockMesh                                    
+surfaceFeatureExtract                                 
+snappyhexmesh 
+rm -r constant/polyMesh
+cp -r 3/polyMesh constant
+rm -r 1*
+rm -r 2*
+rm -r 3*                              
+
+echo "Ending OpenFOAM job at: " $(date)

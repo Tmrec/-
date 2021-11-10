@@ -1,0 +1,129 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  5                                     |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      snappyHexMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Which of the steps to run
+castellatedMesh true;
+snap            true;
+addLayers       true;
+
+
+geometry
+{
+    corgate
+    {
+        type triSurfaceMesh;
+        file "corgate.stl";
+    } 
+};
+
+// Settings for the castellatedMesh generation.
+castellatedMeshControls
+{
+    maxLocalCells 100000;
+    maxGlobalCells 2000000;
+    minRefinementCells 2;
+    maxLoadUnbalance 0.10;
+    nCellsBetweenLevels 4;
+   
+    refinementSurfaces
+    {
+        corgate
+        { 
+            level (6 7); //(7,10)変化させ粗さを決定：時間も計測
+        }
+    }
+    resolveFeatureAngle 360;
+    planarAngle 30;
+    
+    refinementRegions
+    {
+    }
+    locationInMesh (-3 0 1);
+    allowFreeStandingZoneFaces true;
+    
+    
+    features
+    ( 
+       {
+           file "corgate.eMesh";
+           level 6; //6
+       }
+   
+    );
+   
+}
+
+snapControls
+{
+    nSmoothPatch 3;
+    tolerance 2.0;
+    nSolveIter 300;
+    nRelaxIter 5;
+    nFeatureSnapIter 10;
+    implicitFeatureSnap false;　//true or false の組み合わせをみる
+    explicitFeatureSnap true;
+    multiRegionFeatureSnap false;
+}
+
+
+// Settings for the layer addition.
+addLayersControls
+{
+    relativeSizes true;
+
+    layers
+    {
+        "corgate*"
+        {
+            nSurfaceLayers 5;
+        }
+    }
+
+    expansionRatio 1.2;
+    finalLayerThickness 0.3;
+    minThickness 0.25;
+    nGrow 0;
+    featureAngle 30;
+    nRelaxIter 1;
+    nSmoothSurfaceNormals 1;
+    nSmoothNormals 3;
+    nSmoothThickness 10;
+    maxFaceThicknessRatio 0.5;
+    maxThicknessToMedialRatio 0.3;
+    minMedianAxisAngle 90;
+    nBufferCellsNoExtrude 0;
+    nLayerIter 50;
+    nRelaxedIter 20;
+}
+
+
+meshQualityControls
+{
+    #include "meshQualityDict"
+
+    relaxed
+    {
+        maxNonOrtho 75;
+    }
+   
+    nSmoothScale 4;
+    
+    errorReduction 0.75;
+}
+
+mergeTolerance 1E-6;
+
+// ************************************************************************* //

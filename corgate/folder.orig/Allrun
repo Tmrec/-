@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# This tool is developed by Sebastiano Stipa, Politecnico di Milano, 2020 
+
+# USER INPUTS -----------------------------------------------------------
+processors=2   # number of PC processors for parallel computation
+#------------------------------------------------------------------------
+
+echo "Starting OpenFOAM job at: " $(date)
+
+
+simplefoam                              
+
+echo "Ending OpenFOAM job at: " $(date)

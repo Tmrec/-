@@ -1,0 +1,75 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  5                                     |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+#include "./initialConditions"
+
+application     simpleFoam;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         500;
+
+deltaT          1;
+
+writeControl    timeStep;
+
+writeInterval   5;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable true;
+
+
+functions
+{
+    forceCoeffs		
+    {		
+            type            forceCoeffs;	//no change	
+            libs            ("libforces.so");  //no change		
+            writeControl    adjustableRunTime; //no change		
+            writeInterval   5;	   //50?	
+            log             true;		//no change
+            patches         (corgate);	//corgate
+            pName           p;		//no change
+            uName           U;		    //no change
+            rhoInf          $rhoVal;	//密度
+            rho             rhoInf;		//no change
+            liftDir         (#calc "-sin(degToRad($alpha))" 0 #calc "cos(degToRad($alpha))");		
+            dragDir         (#calc "cos(degToRad($alpha))" 0 #calc "sin(degToRad($alpha))");		
+            CofR            (0.25 0 0);  // Quarter-chord.		
+            pitchAxis       (1 0 0);	//look up	
+            magUInf         $mach;		//流速U
+            lRef            1.0;        // lRef is length of hydrofoil, which is equal to chord length of hydrofoil profile.		
+            Aref            1.0;		//投影面積
+    }
+}
+
+
+// ************************************************************************* //
